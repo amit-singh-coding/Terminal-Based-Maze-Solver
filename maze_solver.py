@@ -1,20 +1,23 @@
 import random
-def generate_maze(rows, cols, start, end):
-    maze = [["🔴"] * cols for _ in range(rows)]
+def generate_maze(rows, cols, end):
+    maze = [['▓'] * cols for _ in range(rows)]
     stack = [(0, 0)]
     visited = set()
 
     while stack:
         current = stack[-1]
-        x, y = current
+        r, c = current 
 
-        maze[x][y] = "🔵" # Mark the current cell as visited
+        maze[r][c] = '◌' # Mark the current cell as visited
 
         if current == end:
             break
 
-        neighbors = [(x, y + 1), (x, y - 1), (x + 1, y), (x - 1, y)]
-        unvisited_neighbors = [neighbor for neighbor in neighbors if 0 <= neighbor[0] < rows and 0 <= neighbor[1] < cols and neighbor not in visited]
+        four_dir = [(r, c - 1), (r, c + 1), (r + 1, c), (r - 1, c)]
+        unvisited_neighbors=[]
+        for dr, dc in four_dir:
+            if dr in range(rows) and dc in range(cols):
+                unvisited_neighbors.append((dr, dc))
 
         if unvisited_neighbors:
             next_cell = random.choice(unvisited_neighbors)
@@ -22,49 +25,52 @@ def generate_maze(rows, cols, start, end):
             visited.add(next_cell)
         else:
             stack.pop()
+    return maze 
 
-    return maze
 
-#Maze Solver-----> 
+# Maze solver Using B. F. S Algo-------------------------------------------------------------->
 from collections import deque
-def maze_solver(maze):
-    if not maze or not maze[0]:
-        return []
 
+def bfs(maze, start, end):
     n, m = len(maze), len(maze[0])
-    start = (0, 0)
-    end = (n - 1, m - 1)
-    path = []
     visited = [[False] * m for _ in range(n)]
-    queue = deque([(start, path)])
+    queue = deque([(start, [])])
 
     while queue:
-        (current_row, current_col), current_path = queue.popleft()
+        current, path = queue.popleft()
+        row, col = current
 
-        if not (0 <= current_row < n and 0 <= current_col < m) or maze[current_row][current_col] == "🔴" or visited[current_row][current_col]:
-            continue
+        if current == end:
+            return path + [end]
 
-        visited[current_row][current_col] = True
-        current_path.append((current_row, current_col))
+        if row >=0 and row < n and col >=0 and col < m and maze[row][col] == '◌' and visited[row][col] != True:
+            visited[row][col] = True
+            queue.append(((row + 1, col), path + [(row, col)]))
+            queue.append(((row - 1, col), path + [(row, col)]))
+            queue.append(((row, col + 1), path + [(row, col)]))
+            queue.append(((row, col - 1), path + [(row, col)]))
 
-        if (current_row, current_col) == end:
-            return current_path
+    return None  # No path found
 
-        # Explore in all possible directions (up, down, left, right)
-        directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
-        for dr, dc in directions:
-            next_row, next_col = current_row + dr, current_col + dc
-            if 0 <= next_row < n and 0 <= next_col < m and not visited[next_row][next_col] and maze[next_row][next_col] == "🔵":
-                queue.append(((next_row, next_col), current_path[:]))
+def print_maze(maze):
+    maze[0][0]='S'
+    maze[n-1][n-1]='E'
+    for r in range(n):
+        for c in range(n):
+            if maze[r][c]=="S":
+                print("\033[92mS\033[0m" , end=" ")
 
-    return []
+            elif maze[r][c]=='▓':    
 
-maze=[
-        ['🔵', '🔵', '🔵', '🔴', '🔴'],
-        ['🔴', '🔵', '🔵', '🔵', '🔵'],
-        ['🔴', '🔴', '🔵', '🔴', '🔵'],
-        ['🔴', '🔴', '🔴', '🔵', '🔵'],
-        ['🔴', '🔴', '🔴', '🔴', '🔵']]
+                print("\033[91m▓\033[0m", end=" ")
+            elif maze[r][c]=='◍':
+                print("\033[92m◍\033[0m", end=" ")
+            elif maze[r][c]=='◌': 
+                print("\033[94m◌\033[0m", end=" ")
+            elif maze[r][c]=='E': 
+                print("\033[92mE\033[0m", end=" ")                        
+        print()  
+
 while True:
     user_input2=int(input("""
       1. Generate New puzzle
@@ -72,29 +78,32 @@ while True:
       3. Exit the Game
       Enter your choice (1/2/3): """))
     if user_input2==1:
-        n=int(input("Enter the size of Maze(n*n): "))
-        start = (0, 0)
+        n=int(input("🟢-Enter the size of Maze(n*n): "))
         end = (n - 1, n - 1)
-        maze=generate_maze(n, n, start, end) 
+        maze = generate_maze(n, n, end)
         # Print the generated maze
-        for row in maze:
-            print(row)
-        print("Maze generated!")                          
+        print_maze(maze)
+        print("🟢-Maze generated!")                          
     elif user_input2==2:
-        result_path = maze_solver(maze)
-        if len(result_path)>0:
-            for lis in result_path:
-                r=lis[0]
-                c=lis[1]
-                maze[r][c]="🟢"
-            print("------------------------------------------------------------------------------")    
-            for row in maze:
-                print(row)
-        else:
-            print("NOTE FOUND PERFECT PATH")    
+        try:    
+            n=len(maze)
+            maze[0][0]="◌"
+            maze[n-1][n-1]="◌"
+            result_path = bfs(maze, (0,0), (n-1,n-1))
+            if result_path :
+                for lis in result_path:
+                    r=lis[0]
+                    c=lis[1]
+                    maze[r][c] = '◍'
+                maze[0][0]='S'
+                maze[n-1][n-1]='E'    
+                print_maze(maze)    
+                print("------------------------------------------------------------------------------")    
+            else:
+                print("NOTE FOUND PERFECT PATH")  
+        except:
+            print("🔴-First Generate The Maze")  
     else:
-        print("Thanks You")
-        break
-#third commit 
-
-           
+        print("🟢-Thanks You")
+        break 
+#04          
