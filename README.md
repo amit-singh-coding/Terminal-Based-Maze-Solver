@@ -4,7 +4,7 @@
 A terminal-based Maze Solver generates a random maze, and finds a path from the start (0,0) to the end (n-1,n-1), and visualizes the maze and path in the terminal.
 
 
-![App Screenshot](https://github.com/amit-singh-coding/demo_web111/blob/main/maze_sort.jpg)
+![Maze Solver Screenshot](https://github.com/amit-singh-coding/Terminal-Based-Maze-Solver/blob/main/maze_img.jpg)
 
 
 
