@@ -105,4 +105,5 @@ while True:
             print("🔴-First Generate The Maze")  
     else:
         print("🟢-Thanks You")
-        break       
+        break 
+#02          
