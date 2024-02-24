@@ -70,9 +70,9 @@ A terminal-based Maze Solver generates a random maze, and finds a path from the 
 + Recursion and backtracking
 ## Installation
 
-1- Clone the repository: `https://github.com/amit-singh-coding/Terminal-Based-Maze-Solver`
+1- Clone the repository: `git clone https://github.com/amit-singh-coding/Terminal-Based-Maze-Solver`
 
-2- Navigate to the project directory: cd `Terminal-Based-Maze-Solver`
+2- Navigate to the project directory: `cd Terminal-Based-Maze-Solver`
 
 3- Run the program: `python maze_solver.py` 
 
