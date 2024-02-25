@@ -76,3 +76,11 @@ A terminal-based Maze Solver generates a random maze, and finds a path from the 
 
 3- Run the program: `python maze_solver.py` 
 
+4- Install dependencies: `pip install -r requirements.txt`
+
+## Contributions
+Contributions are welcome! If you find any issues or have improvements in mind, feel free to submit a pull request.
+
+## License
+This Sudoku Solver is licensed under the `MIT License.`
+
